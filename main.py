@@ -31,17 +31,38 @@ def ask_groq(prompt: str) -> str:
     stream=False,
     stop=None,
   )
-  return completion.choices[0].message.content
+  # Safely extract content from the response
+  try:
+    return completion.choices[0].message.content
+  except Exception:
+    try:
+      return str(completion)
+    except Exception:
+      return "(no response)"
 
 
 def main():
   while True:
-    answer = input("What do you want? ")
-    if answer.strip().lower() == "quit":
+    try:
+      answer = input("What do you want? ")
+    except (EOFError, KeyboardInterrupt):
+      print("\nExiting.")
       break
+
+    if answer is None:
+      continue
+
+    answer = answer.strip()
+    if not answer:
+      # ignore empty input and prompt again
+      continue
+
+    if answer.lower() == "quit":
+      break
+
     try:
       response = ask_groq(answer)
-      print(response)
+      print(response, flush=True)
     except Exception as e:
       print("Error calling Groq API:", e)
 
