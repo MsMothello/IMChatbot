@@ -1,71 +1,37 @@
 
 import os
+from dotenv import load_dotenv
+from groq import Groq
 
-api_key = os.environ.get("GROQ_API_KEY")
-if not api_key:
-  raise RuntimeError("Please set the GROQ_API_KEY environment variable")
+load_dotenv()
 
-_client = None
-def get_client():
-  global _client
-  if _client is not None:
-    return _client
-  try:
-    import importlib
-    groq = importlib.import_module("groq")
-    Groq = getattr(groq, "Groq")
-  except Exception:
-    raise RuntimeError("Missing required package 'groq'. Install dependencies with: pip3 install -r requirements.txt")
-  _client = Groq(api_key=api_key)
-  return _client
+client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 
-def ask_groq(prompt: str) -> str:
-  client = get_client()
-  completion = client.chat.completions.create(
+while True:
+    answer = input("User prompt: ")
+    
+    if answer == 'quit':
+        break
+    
+    print(answer)
+
+    completion = client.chat.completions.create(
     model="openai/gpt-oss-120b",
-    messages=[{"role": "user", "content": prompt}],
+    messages=[
+      {
+        "role": "user",
+        "content": answer
+      }
+    ],
     temperature=1,
     max_completion_tokens=8192,
     top_p=1,
     reasoning_effort="medium",
     stream=False,
-    stop=None,
-  )
-  # Safely extract content from the response
-  try:
-    return completion.choices[0].message.content
-  except Exception:
-    try:
-      return str(completion)
-    except Exception:
-      return "(no response)"
+    stop=None
+)
 
-
-def main():
-  while True:
-    try:
-      answer = input("What do you want? ")
-    except (EOFError, KeyboardInterrupt):
-      print("\nExiting.")
-      break
-
-    if answer is None:
-      continue
-
-    answer = answer.strip()
-    if not answer:
-      # ignore empty input and prompt again
-      continue
-
-    if answer.lower() == "quit":
-      break
-
-    try:
-      response = ask_groq(answer)
-      print(response, flush=True)
-    except Exception as e:
-      print("Error calling Groq API:", e)
-
-
-if __name__ == "__main__":
-  main()
+#for chunk in completion:
+#   print(chunk.choices[0].delta.content or "", end="")
+    
+    print(completion.choices[0].message.content)
