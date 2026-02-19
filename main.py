@@ -7,31 +7,42 @@ load_dotenv()
 
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 
+# Keep conversation history
+messages = []
+
 while True:
     answer = input("User prompt: ")
     
     if answer == 'quit':
         break
     
-    print(answer)
-
-    completion = client.chat.completions.create(
-    model="openai/gpt-oss-120b",
-    messages=[
-      {
+    # Add user message to history
+    messages.append({
         "role": "user",
         "content": answer
-      }
-    ],
-    temperature=1,
-    max_completion_tokens=8192,
-    top_p=1,
-    reasoning_effort="medium",
-    stream=False,
-    stop=None
-)
+    })
 
-#for chunk in completion:
-#   print(chunk.choices[0].delta.content or "", end="")
+    completion = client.chat.completions.create(
+        model="openai/gpt-oss-120b",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful AI assistant."
+            }
+        ] + messages,
+        temperature=1,
+        max_completion_tokens=8192,
+        top_p=1,
+        reasoning_effort="medium",
+        stream=False,
+        stop=None
+    )
     
-    print(completion.choices[0].message.content)
+    # Add assistant response to history
+    response = completion.choices[0].message.content
+    messages.append({
+        "role": "assistant",
+        "content": response
+    })
+    
+    print(f"Assistant: {response}")
