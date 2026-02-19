@@ -9,50 +9,65 @@ Once the project is in your account, there are different ways you can set up thi
 
 ## GitHub Codespaces
 You can set up this project to develop in [GitHub Codespaces](https://github.com/features/codespaces), where you can code, debug, and run your app remotely in a codespace. A codespace provides a fully configured development environment hosted in the cloud, eliminating the need for local setup. This environment includes your project's dependencies, tools, and extensions, ensuring a consistent and reproducible development experience. It streamlines collaboration by providing real-time editing, integrated version control, and easy access to debugging and testing tools, all while maintaining the security and reliability of your project.
+# PyStart
 
-Steps:
+This project serves as an example for working with DevContainers and includes a small command-line chatbot example that demonstrates calling the Groq API.
 
-1. Click on the "<> Code" button
-2. Click on the "Codespaces" tab
-3. Click on the "Create codespace on main"
+## Setup
 
-![](./docs/images/pystart.png?raw=true)
+Start by forking the project and opening it in your development environment (Codespaces or local VS Code).
 
+You can develop in GitHub Codespaces or locally in VS Code. The repository includes information and images in `docs/images/` to guide Codespaces usage.
 
-## Locally in VS Code
-You first need to set up your Python development environment. Specifically, this tutorial requires:
+### Locally in VS Code
 
-Python 3.11 (check the installation guide if you don't have it installed)
-Python extension for VS Code (For additional details on installing extensions, you can read Extension Marketplace).
+Requirements and recommendations:
 
-It is recommended to use conda or env to isolate the python environment:
-- [Conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) information
-- [venv](https://docs.python.org/3/library/venv.html) information
+- Python 3.11
+- Use `venv` or `conda` to isolate your environment
+- Recommended VS Code extensions: Python, Pylance, Black/Formatter, Ruff
 
-VS Code should have the following extensions:
-- [ms-python.python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
-- [ms-python.vscode-pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
-- [esbenp.prettier-vscode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- [ms-python.black-formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
-- [charliermarsh.ruff](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
-- [ms-python.debugpy](https://marketplace.visualstudio.com/items?itemName=ms-python.debugpy)
+Follow the DevContainer documentation if you choose to work inside a containerized dev environment.
 
+## Running the example FastAPI app
 
-## VS Code and DevContainer
-If you prefer to use DevContainer, you just need to install the DevContainer extension and all necessary extensions will be taken care for you.
-Follow the instructions from the [DevContainer site](https://code.visualstudio.com/docs/devcontainers/tutorial).
+To run the FastAPI server (if present), use:
 
-# Running in Codespaces
-To run the FastAPI server, run the following command below. This command will reload the server as you make changes to the code.
-```
+```bash
 uvicorn main:app --reload
 ```
 
-Once you run it, you will see a pop-up window that will make your application available to the outside. Click on "Open in browser" button to open in your browser:
-![](./docs/images/running.png?raw=true)
+## IMChatbot (Groq) — Command-line chatbot
 
-If the pop-up dissapear before you can click on it, you can click on the "PORTS" tab nad click on the "Open in browser" button as you hover the URL as shown below:
-![](./docs/images/running-manually.png?raw=true)
+This repository contains `main.py`, a simple CLI chatbot that calls the Groq API in a loop until you type `quit`.
 
-After you enable the port to be access via your browser, you will see your browser open to the application. You can now use the URL the browser points to for your API access.
-![](./docs/images/running-browser.png?raw=true)
+Steps to run the chatbot:
+
+1. Install dependencies:
+
+```bash
+pip3 install -r requirements.txt
+```
+
+2. Set your Groq API key (replace with your real key):
+
+```bash
+export GROQ_API_KEY="your_real_groq_key_here"
+```
+
+3. Run the chatbot:
+
+```bash
+python3 main.py
+```
+
+Usage:
+
+- Type a question and press Enter; the app will send it to the Groq API and print the response.
+- Type `quit` to exit.
+
+If you want, add a `.env` file and export the environment variable from your shell profile for convenience.
+
+---
+
+File: [main.py](main.py)

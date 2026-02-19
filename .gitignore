@@ -130,6 +130,13 @@ ENV/
 env.bak/
 venv.bak/
 
+# Local env example
+.env.local
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+
 # Spyder project settings
 .spyderproject
 .spyproject
